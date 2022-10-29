@@ -1,0 +1,108 @@
+PROGRAM tst_hshreg
+%NOLOCKGROUP
+
+-------macros
+--change depending on size of environment file
+%define HASH_SIZE 15
+
+%define HASH_PROGRAM 'env'
+%define HASHTABLE 'tbl'
+---------------
+
+%include register_types.klt
+--include value type
+%include hashenv.klt
+hash_type_define(hashenv)
+--create hash type
+t_hash(hashname,hval_def,hashenv)
+
+VAR
+  tblProg : STRING[16]
+  tblName : STRING[16]
+  reg : hval_def
+  tbl FROM env: ARRAY[HASH_SIZE] OF hashname
+
+%include hashreg.klh
+
+%class hashenv('hash.klc','hashclass.klh','hashenv.klt')
+
+ROUTINE create_hash
+  VAR
+    b : BOOLEAN
+    nullHash : hval_def
+  BEGIN
+    nullHash = hashr__nullenv
+
+    b = hashenv__clear_table(tblProg, tblName, nullHash)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 1
+    b = hashenv__put('string1', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 2
+    b = hashenv__put('string2', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 3
+    b = hashenv__put('string3', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 4
+    b = hashenv__put('string4', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 5
+    b = hashenv__put('string5', reg, tblProg, tblName)
+    
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 6
+    b = hashenv__put('string6', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 7
+    b = hashenv__put('string7', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 8
+    b = hashenv__put('string8', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 9
+    b = hashenv__put('string9', reg, tblProg, tblName)
+
+    --add var
+    reg.typ = DATA_STRING ; reg.id = 10
+    b = hashenv__put('string10', reg, tblProg, tblName)
+
+
+  END create_hash
+
+BEGIN
+  IF UNINIT(tblProg) THEN
+    tblProg = HASH_PROGRAM
+  ENDIF
+  IF UNINIT(tblName) THEN
+    tblName = HASHTABLE
+  ENDIF
+
+  --set hashreg object
+  hashr__set_hash_table(tblProg, tblName)
+  
+  --clear strings
+  hashr__clear_registers(DATA_STRING, TRUE)
+
+  --populate hash
+  create_hash
+
+  --comment registers
+  hashr__set_comments
+
+  --set strings
+  hashr__set_string('string1', 'hello')
+  hashr__set_string('string3', 'world')
+  hashr__set_string('string7', 'you')
+  hashr__set_string('string8', 'fridged')
+  hashr__set_string('string9', 'bitch')
+
+END tst_hshreg

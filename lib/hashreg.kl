@@ -1,0 +1,206 @@
+PROGRAM hashreg
+%NOBUSYLAMP
+%COMMENT = 'hashreg'
+%NOLOCKGROUP
+
+%INCLUDE errors.klt
+%include register_types.klt
+--include value type
+%include hashenv.klt
+hash_type_define(hashenv)
+--create hash type
+t_hash(hashname,hval_def,hashenv)
+
+VAR
+  tblProg : STRING[16]
+  tblName : STRING[16]
+  reg : hval_def
+
+%include errors.klh
+%include registers.klh
+%include hashreg.klh
+
+%class hashenv('hash.klc','hashclass.klh','hashenv.klt')
+
+--private
+
+ROUTINE hSetCmts(tbl : ARRAY OF hashname)
+  VAR
+    i, status : INTEGER
+  BEGIN
+    i=1
+    WHILE (i <= ARRAY_LEN(tbl)) DO
+      IF (tbl[i].key <> '') THEN
+        SELECT (tbl[i].val.typ) OF
+          CASE(DATA_REG):
+            SET_REG_CMT((tbl[i].val.id), (tbl[i].key), status)
+          CASE(DATA_POSREG):
+            SET_PREG_CMT((tbl[i].val.id), (tbl[i].key), status)
+          CASE(DATA_STRING):
+            SET_SREG_CMT((tbl[i].val.id), (tbl[i].key), status)
+          ELSE:
+            SET_PORT_CMT((tbl[i].val.typ), (tbl[i].val.id), (tbl[i].key), status)
+        ENDSELECT
+
+        CHK_STAT(status)
+      ENDIF
+      i = i + 1
+    ENDWHILE
+  END hSetCmts
+
+--public
+ROUTINE hashr__nullenv
+  VAR
+    null : hval_def
+  BEGIN
+    null.typ = INVALIDTYPE ; null.id = 0
+    RETURN(null)
+  END hashr__nullenv
+
+ROUTINE hashr__set_hash_table
+  BEGIN
+    tblProg = progName
+    tblName = tableName
+  END hashr__set_hash_table
+
+ROUTINE hashr__set_comments
+  VAR
+	  entry : INTEGER
+  BEGIN
+    hSetCmts(BYNAME(tblProg, tblName, entry))
+  END hashr__set_comments
+
+ROUTINE hashr__clear_registers
+  BEGIN
+    SELECT typ OF
+      CASE(0):
+        registers__clear_comments(DATA_REG, reset)
+        registers__clear_comments(DATA_POSREG, reset)
+        registers__clear_comments(DATA_STRING, reset)
+        registers__clear_comments(io_flag, reset)
+      CASE(DATA_REG):
+        registers__clear_comments(DATA_REG, reset)
+      CASE(DATA_POSREG):
+        registers__clear_comments(DATA_POSREG, reset)
+      CASE(DATA_STRING):
+        registers__clear_comments(DATA_STRING, reset)
+      CASE(io_flag):
+        registers__clear_comments(io_flag, reset)
+    ENDSELECT
+  END hashr__clear_registers
+
+  --setters
+ROUTINE hashr__set_int
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      registers__set_int((reg.id), val)
+    ENDIF
+  END hashr__set_int
+
+ROUTINE hashr__set_real
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      registers__set_real((reg.id), val)
+    ENDIF
+  END hashr__set_real
+
+ROUTINE hashr__set_string
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      registers__set_string((reg.id), val)
+    ENDIF
+  END hashr__set_string
+
+ROUTINE hashr__set_io
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      registers__set_io((reg.typ), (reg.id), val)
+    ENDIF
+  END hashr__set_io
+
+ROUTINE hashr__set_boolean
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      registers__set_boolean((reg.id), val)
+    ENDIF
+  END hashr__set_boolean
+
+  --getters
+ROUTINE hashr__get_int
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      RETURN(registers__get_int((reg.id)))
+    ENDIF
+    RETURN(0)
+  END hashr__get_int
+
+ROUTINE hashr__get_real
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      RETURN(registers__get_real((reg.id)))
+    ENDIF
+    RETURN(0)
+  END hashr__get_real
+
+ROUTINE hashr__get_string
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      RETURN(registers__get_string((reg.id)))
+    ENDIF
+    RETURN('')
+  END hashr__get_string
+
+ROUTINE hashr__get_io
+  VAR
+    b : BOOLEAN
+    out : INTEGER
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      out = registers__get_io((reg.typ), (reg.id))
+      IF out = 1 THEN
+        RETURN(TRUE)
+      ELSE
+        RETURN(FALSE)
+      ENDIF
+    ENDIF
+    RETURN(FALSE)
+  END hashr__get_io
+
+ROUTINE hashr__get_boolean
+  VAR
+    b : BOOLEAN
+  BEGIN
+    b = hashenv__get(name, reg, tblProg, tblName)
+    IF b THEN
+      RETURN(registers__get_boolean((reg.id)))
+    ENDIF
+    RETURN(FALSE)
+  END hashr__get_boolean
+
+BEGIN
+END hashreg

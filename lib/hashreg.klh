@@ -1,0 +1,44 @@
+%ifndef hashreg_h
+%define hashreg_h
+
+%include namespace.m
+
+%define prog_name hashr
+%define prog_name_alias hashr
+
+--public
+declare_function(prog_name,nullenv,prog_name_alias,nlenv)
+ROUTINE hashr__nullenv : hval_def FROM hashreg
+
+declare_function(prog_name,clear_registers,prog_name_alias,clreg)
+ROUTINE hashr__clear_registers(typ : INTEGER; reset : BOOLEAN) FROM hashreg
+
+  --setters
+declare_function(prog_name,set_hash_table,prog_name_alias,sttbl)
+ROUTINE hashr__set_hash_table(progName : STRING; tableName : STRING) FROM hashreg
+declare_function(prog_name,set_comments,prog_name_alias,stcmt)
+ROUTINE hashr__set_comments FROM hashreg
+
+declare_function(prog_name,set_int,prog_name_alias,stint)
+ROUTINE hashr__set_int(name : STRING; val : INTEGER) FROM hashreg
+declare_function(prog_name,set_real,prog_name_alias,strl)
+ROUTINE hashr__set_real(name : STRING; val : REAL) FROM hashreg
+declare_function(prog_name,set_string,prog_name_alias,stst)
+ROUTINE hashr__set_string(name : STRING; val : STRING) FROM hashreg
+declare_function(prog_name,set_io,prog_name_alias,stio)
+ROUTINE hashr__set_io(name : STRING; val : BOOLEAN) FROM hashreg
+declare_function(prog_name,set_boolean,prog_name_alias,setbol)
+ROUTINE hashr__set_boolean(name : STRING; val : BOOLEAN) FROM hashreg
+  --getters
+declare_function(prog_name,get_int,prog_name_alias,gtint)
+ROUTINE hashr__get_int(name : STRING) : INTEGER FROM hashreg
+declare_function(prog_name,get_real,prog_name_alias,gtrel)
+ROUTINE hashr__get_real(name : STRING) : REAL FROM hashreg
+declare_function(prog_name,get_string,prog_name_alias,gtstr)
+ROUTINE hashr__get_string(name : STRING) : STRING FROM hashreg
+declare_function(prog_name,get_io,prog_name_alias,gtio)
+ROUTINE hashr__get_io(name : STRING) : BOOLEAN FROM hashreg
+declare_function(prog_name,get_boolean,prog_name_alias,gtbol)
+ROUTINE hashr__get_boolean(name : STRING) : BOOLEAN FROM hashreg
+
+%endif --hashreg

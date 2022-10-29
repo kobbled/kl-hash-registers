@@ -1,0 +1,26 @@
+{
+  "manver" : "1",
+  "project" : "hash_registers",
+  "description" : "",
+  "version" : "0.0.1",
+  "license" : "MIT",
+  "author" : "kobbled",
+  "source" : [
+    "lib/hashreg.kl"
+  ],
+  "includes" : [
+    "lib"
+  ],
+  "depends" : [
+    "ktransw-macros",
+    "Hash",
+    "registers"
+  ],
+  "tests-depends" : [
+    "KUnit",
+    "display"
+  ],
+  "tests" : [
+    "test/test_hashreg.kl"
+  ]
+}
