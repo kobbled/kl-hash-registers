@@ -21,6 +21,6 @@
     "display"
   ],
   "tests" : [
-    "test/test_hashreg.kl"
+    "test/tppenv.kl"
   ]
 }

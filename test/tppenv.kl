@@ -1,0 +1,612 @@
+PROGRAM tppenv
+%NOLOCKGROUP
+
+-------macros
+--change depending on size of environment file
+%define HASH_SIZE 277
+
+%define HASH_PROGRAM 'env'
+%define HASHTABLE 'tbl'
+---------------
+
+%include register_types.klt
+--include value type
+%include hashenv.klt
+hash_type_define(hashenv)
+--create hash type
+t_hash(hashname,hval_def,hashenv)
+
+VAR
+  tblProg : STRING[16]
+  tblName : STRING[16]
+  reg : hval_def
+  tbl FROM env: ARRAY[HASH_SIZE] OF hashname
+  b : BOOLEAN
+
+%include hashreg.klh
+
+%class hashenv('hash.klc','hashclass.klh','hashenv.klt')
+
+BEGIN
+  IF UNINIT(tblProg) THEN
+    tblProg = HASH_PROGRAM
+  ENDIF
+  IF UNINIT(tblName) THEN
+    tblName = HASHTABLE
+  ENDIF
+
+  --set hashreg object
+  hashr__set_hash_table(tblProg, tblName)
+  
+  --clear registers
+  hashr__clear_registers(DATA_REG, TRUE)
+  hashr__clear_registers(DATA_POSREG, TRUE)
+  hashr__clear_registers(DATA_STRING, TRUE)
+  hashr__clear_registers(io_flag, TRUE)
+
+  --clear hash table
+  reg = hashr__nullenv
+  b = hashenv__clear_table(tblProg, tblName, reg)
+
+  --**insert environment variables into hash**
+  -----------
+    reg.typ = DATA_STRING ; reg.id = 1
+  b = hashenv__put('program_name', reg, tblProg, tblName)
+    reg.typ = DATA_STRING ; reg.id = 2
+  b = hashenv__put('parameters_name', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 52
+  b = hashenv__put('Alarm_Reg_Flag', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 2
+  b = hashenv__put('Laser_Fault', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 19
+  b = hashenv__put('Laser_Enable', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 10
+  b = hashenv__put('Laser_Enable_to_G9SP', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 1
+  b = hashenv__put('Laser_Ready', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 21
+  b = hashenv__put('Laser_Gate_On', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 18
+  b = hashenv__put('Laser_On', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 22
+  b = hashenv__put('Laser_Aiming_Beam', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 25
+  b = hashenv__put('PF1_Start', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 26
+  b = hashenv__put('PF2_Start', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 28
+  b = hashenv__put('Air_Knife', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 29
+  b = hashenv__put('Argon_Carrier_Gas', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 30
+  b = hashenv__put('Argon_Shield_Gas', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 7
+  b = hashenv__put('sensor_door_open', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 50
+  b = hashenv__put('scan_trigger', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 51
+  b = hashenv__put('Kill_Height_Control', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 102
+  b = hashenv__put('Home_HTStock', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 103
+  b = hashenv__put('Safe_Position', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 104
+  b = hashenv__put('Positioner_Horiz', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 97
+  b = hashenv__put('isPositioner', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 98
+  b = hashenv__put('skipHTHome', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 99
+  b = hashenv__put('HT_Home', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 100
+  b = hashenv__put('Home_Robot', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 96
+  b = hashenv__put('Rail_HT', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 112
+  b = hashenv__put('HT_Middle', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 113
+  b = hashenv__put('HT_ID_Pos', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 141
+  b = hashenv__put('IMStp', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 143
+  b = hashenv__put('SfSDP', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 142
+  b = hashenv__put('DO_Hold', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 148
+  b = hashenv__put('DO_Enable', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 145
+  b = hashenv__put('Fault_Reset', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 11
+  b = hashenv__put('OP1_Reset', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 12
+  b = hashenv__put('OP2_Reset', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 4
+  b = hashenv__put('OP2_Buzzer', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 9
+  b = hashenv__put('DI_Start', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 10
+  b = hashenv__put('DI_Stop', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 3
+  b = hashenv__put('Fence_Closed', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 109
+  b = hashenv__put('T1_Mode_Sel', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 110
+  b = hashenv__put('T2_Mode_Sel', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 9
+  b = hashenv__put('T1_or_T2_Mode_Sel', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 111
+  b = hashenv__put('Auto_Mode_Sel', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 108
+  b = hashenv__put('Dead_Man_Switch', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 106
+  b = hashenv__put('E_Stop_Active', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 1
+  b = hashenv__put('Laser_Power', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 3
+  b = hashenv__put('PF1_Spd', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 4
+  b = hashenv__put('PF2_Spd', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 5
+  b = hashenv__put('PF1_Gas_Spd', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 6
+  b = hashenv__put('PF2_Gas_Spd', reg, tblProg, tblName)
+    reg.typ = io_anin ; reg.id = 2
+  b = hashenv__put('height_sensor', reg, tblProg, tblName)
+    reg.typ = io_uopout ; reg.id = 2
+  b = hashenv__put('system_ready', reg, tblProg, tblName)
+    reg.typ = io_uopout ; reg.id = 3
+  b = hashenv__put('Prgm_Run', reg, tblProg, tblName)
+    reg.typ = io_uopout ; reg.id = 4
+  b = hashenv__put('Prgm_Pause', reg, tblProg, tblName)
+    reg.typ = io_uopout ; reg.id = 6
+  b = hashenv__put('UO_Fault', reg, tblProg, tblName)
+    reg.typ = io_uopout ; reg.id = 8
+  b = hashenv__put('UO_TP_Enable', reg, tblProg, tblName)
+    reg.typ = io_uopin ; reg.id = 5
+  b = hashenv__put('UI_Fault_Reset', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 91
+  b = hashenv__put('Abort_All', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 1
+  b = hashenv__put('Hmi_Start', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 4
+  b = hashenv__put('Hmi_Stop', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 50
+  b = hashenv__put('Start_Flag', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 2
+  b = hashenv__put('Hmi_PF1_Selected', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 3
+  b = hashenv__put('Hmi_PF2_Selected', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 34
+  b = hashenv__put('powderStart', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 35
+  b = hashenv__put('powderStop', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 37
+  b = hashenv__put('positioner_temp', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 38
+  b = hashenv__put('headstock_temp', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 90
+  b = hashenv__put('Dryrun_Selected', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 5
+  b = hashenv__put('Hmi_Dry_Run', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 6
+  b = hashenv__put('Hmi_Heat_Treat', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 92
+  b = hashenv__put('Use_UTHeight', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 113
+  b = hashenv__put('Pause_Scan_Path', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 109
+  b = hashenv__put('end_scan', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 10
+  b = hashenv__put('Hmi_Laser_Enable', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 11
+  b = hashenv__put('Hmi_Laser_Disable', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 12
+  b = hashenv__put('Hmi_Laser_Start', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 13
+  b = hashenv__put('Hmi_Laser_Stop', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 14
+  b = hashenv__put('Hmi_Powder_Start', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 15
+  b = hashenv__put('Hmi_Powder_Stop', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 59
+  b = hashenv__put('Start_Part', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 60
+  b = hashenv__put('End_Part', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 62
+  b = hashenv__put('offset_passes', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 103
+  b = hashenv__put('outerLayerLoop', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 84
+  b = hashenv__put('waitpause', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 96
+  b = hashenv__put('cleanTeeth', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 106
+  b = hashenv__put('wear_scan', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 107
+  b = hashenv__put('tcp_dynamic', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 67
+  b = hashenv__put('clear_PR', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 3
+  b = hashenv__put('Home_HT_Stock', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 4
+  b = hashenv__put('Home_G2', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 9
+  b = hashenv__put('ht_inter', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 69
+  b = hashenv__put('Rotate_Offset', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 25
+  b = hashenv__put('Start_Offset', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 36
+  b = hashenv__put('Start_PR', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 26
+  b = hashenv__put('Stop_Offset', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 27
+  b = hashenv__put('Ofst_UFRot', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 64
+  b = hashenv__put('pos_leader', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 73
+  b = hashenv__put('pos_leader2', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 14
+  b = hashenv__put('feed_Offset', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 15
+  b = hashenv__put('Powder_ht', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 16
+  b = hashenv__put('Powder_pos', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 12
+  b = hashenv__put('ht_retract', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 13
+  b = hashenv__put('ht_intermediate', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 192
+  b = hashenv__put('startNum', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 193
+  b = hashenv__put('finishNum', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 190
+  b = hashenv__put('NextNum', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 48
+  b = hashenv__put('setStart', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 49
+  b = hashenv__put('setFinish', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 50
+  b = hashenv__put('setNext', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 40
+  b = hashenv__put('UFPosStart', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 53
+  b = hashenv__put('Offst_z', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 54
+  b = hashenv__put('Offst_x', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 55
+  b = hashenv__put('Offst_x_bf', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 56
+  b = hashenv__put('Offst_x_af', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 61
+  b = hashenv__put('Offst_rail', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 57
+  b = hashenv__put('Offst_strt', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 58
+  b = hashenv__put('Offst_apprch', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 59
+  b = hashenv__put('Offst_dprt', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 60
+  b = hashenv__put('UF_Temp', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 74
+  b = hashenv__put('Frame_Offset', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 75
+  b = hashenv__put('Tool_Offset', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 41
+  b = hashenv__put('old_uframe_pos', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 42
+  b = hashenv__put('old_uframe_ht', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 43
+  b = hashenv__put('temp_uframe', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 44
+  b = hashenv__put('temp_uf_ofst', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 46
+  b = hashenv__put('Temp_2', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 45
+  b = hashenv__put('Temp_UTool', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 71
+  b = hashenv__put('sens_pos1', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 72
+  b = hashenv__put('sens_pos2', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 66
+  b = hashenv__put('lpos1', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 65
+  b = hashenv__put('lpos2', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 17
+  b = hashenv__put('jpos_1', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 19
+  b = hashenv__put('jpos_2', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 77
+  b = hashenv__put('pos', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 1
+  b = hashenv__put('Alarm_Reg', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 2
+  b = hashenv__put('Mem_Tool_No', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 3
+  b = hashenv__put('Mem_Frame_No', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 10
+  b = hashenv__put('TP_Prgm_Num', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 11
+  b = hashenv__put('HMI_Prgm_Num', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 13
+  b = hashenv__put('Temp_Prgm_Num', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 329
+  b = hashenv__put('Copy_Prgm_Num', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 14
+  b = hashenv__put('Workorder', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 36
+  b = hashenv__put('old_Workorder', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 37
+  b = hashenv__put('numOfProg', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 195
+  b = hashenv__put('template', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 196
+  b = hashenv__put('isTest', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 30
+  b = hashenv__put('HMI_Laser_Power', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 60
+  b = hashenv__put('Power', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 31
+  b = hashenv__put('HMI_Powder_Sel', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 15
+  b = hashenv__put('HMI_Laser_Power1', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 16
+  b = hashenv__put('HMI_Laser_Power2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 17
+  b = hashenv__put('HMI_Laser_Power3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 18
+  b = hashenv__put('HMI_Laser_Power4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 32
+  b = hashenv__put('HMI_Powder_Speed', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 33
+  b = hashenv__put('HMI_Powder_GasF', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 26
+  b = hashenv__put('Flow_Rate', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 27
+  b = hashenv__put('Flow_Rate2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 28
+  b = hashenv__put('Flow_Rate3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 29
+  b = hashenv__put('Flow_Rate4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 61
+  b = hashenv__put('Powder_Speed', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 62
+  b = hashenv__put('Powder_Gas_Flow', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 34
+  b = hashenv__put('Powder_Delay', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 35
+  b = hashenv__put('Powder_Change', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 179
+  b = hashenv__put('angle', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 180
+  b = hashenv__put('sinx', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 181
+  b = hashenv__put('cosx', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 69
+  b = hashenv__put('UF_zRot', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 202
+  b = hashenv__put('UF_xRot', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 205
+  b = hashenv__put('UF_zManual', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 207
+  b = hashenv__put('UT_yRot', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 209
+  b = hashenv__put('UT_zRot', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 76
+  b = hashenv__put('UT_xRot', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 211
+  b = hashenv__put('UT_AFx', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 198
+  b = hashenv__put('ofst_lasStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 199
+  b = hashenv__put('ofst_lasStop', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 216
+  b = hashenv__put('ofst_xStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 217
+  b = hashenv__put('ofst_yStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 218
+  b = hashenv__put('ofst_zStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 220
+  b = hashenv__put('ofst_xRot', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 226
+  b = hashenv__put('ofst_apr', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 227
+  b = hashenv__put('ofst_dpt', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 228
+  b = hashenv__put('ofst_retractZ', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 230
+  b = hashenv__put('ofst_Layery', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 231
+  b = hashenv__put('ofst_LayerDeg', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 237
+  b = hashenv__put('diameter', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 236
+  b = hashenv__put('radius', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 100
+  b = hashenv__put('diameter2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 238
+  b = hashenv__put('radius2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 316
+  b = hashenv__put('tDiameter', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 315
+  b = hashenv__put('tRadius', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 240
+  b = hashenv__put('length', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 164
+  b = hashenv__put('height', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 244
+  b = hashenv__put('width', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 245
+  b = hashenv__put('widthDeg', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 63
+  b = hashenv__put('rotate', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 311
+  b = hashenv__put('layerConfig', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 332
+  b = hashenv__put('passConfig', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 248
+  b = hashenv__put('strtDist', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 249
+  b = hashenv__put('startDeg', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 65
+  b = hashenv__put('startDistOfst', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 58
+  b = hashenv__put('startDistOfst2', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 33
+  b = hashenv__put('sensor_signal', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 34
+  b = hashenv__put('sensor_zero', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 319
+  b = hashenv__put('standoff_dist', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 38
+  b = hashenv__put('ai2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 56
+  b = hashenv__put('measure_mm', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 251
+  b = hashenv__put('pocketSep', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 253
+  b = hashenv__put('pitch', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 99
+  b = hashenv__put('spiralPitch', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 258
+  b = hashenv__put('ccw', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 191
+  b = hashenv__put('dir', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 344
+  b = hashenv__put('poseType', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 345
+  b = hashenv__put('poseCode', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 234
+  b = hashenv__put('termn', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 259
+  b = hashenv__put('speed', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 104
+  b = hashenv__put('Clad_speed', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 301
+  b = hashenv__put('feedSpeed', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 302
+  b = hashenv__put('aprSpeed', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 303
+  b = hashenv__put('rotSpeed', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 261
+  b = hashenv__put('speed1', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 262
+  b = hashenv__put('speed2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 263
+  b = hashenv__put('speed3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 264
+  b = hashenv__put('speed4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 265
+  b = hashenv__put('Layer1', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 266
+  b = hashenv__put('Layer2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 267
+  b = hashenv__put('Layer3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 268
+  b = hashenv__put('Layer4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 269
+  b = hashenv__put('tLayer', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 270
+  b = hashenv__put('tLayer1', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 271
+  b = hashenv__put('tLayer2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 272
+  b = hashenv__put('tLayer3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 273
+  b = hashenv__put('tLayer4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 274
+  b = hashenv__put('GS_Layer1', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 275
+  b = hashenv__put('GS_Layer2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 276
+  b = hashenv__put('GS_Layer3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 277
+  b = hashenv__put('GS_Layer4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 278
+  b = hashenv__put('FS_Layer1', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 279
+  b = hashenv__put('FS_Layer2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 280
+  b = hashenv__put('FS_Layer3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 281
+  b = hashenv__put('FS_Layer4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 325
+  b = hashenv__put('l1Pitch', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 326
+  b = hashenv__put('l2Pitch', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 327
+  b = hashenv__put('l3Pitch', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 328
+  b = hashenv__put('l4Pitch', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 306
+  b = hashenv__put('jStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 307
+  b = hashenv__put('kStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 309
+  b = hashenv__put('mStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 308
+  b = hashenv__put('lStart', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 282
+  b = hashenv__put('i', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 283
+  b = hashenv__put('inc', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 284
+  b = hashenv__put('j', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 285
+  b = hashenv__put('passes', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 286
+  b = hashenv__put('k', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 287
+  b = hashenv__put('pockets', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 290
+  b = hashenv__put('m', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 291
+  b = hashenv__put('bands', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 288
+  b = hashenv__put('l', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 289
+  b = hashenv__put('layers', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 292
+  b = hashenv__put('n', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 293
+  b = hashenv__put('parts', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 318
+  b = hashenv__put('passPause', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 321
+  b = hashenv__put('pocketPause', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 350
+  b = hashenv__put('param_var1', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 351
+  b = hashenv__put('param_var2', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 352
+  b = hashenv__put('param_var3', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 353
+  b = hashenv__put('param_var4', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 354
+  b = hashenv__put('param_var5', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 355
+  b = hashenv__put('param_var6', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 356
+  b = hashenv__put('param_var7', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 357
+  b = hashenv__put('param_var8', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 358
+  b = hashenv__put('param_var9', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 359
+  b = hashenv__put('param_var10', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 360
+  b = hashenv__put('param_var11', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 361
+  b = hashenv__put('param_var12', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 362
+  b = hashenv__put('param_var13', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 363
+  b = hashenv__put('param_var14', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 364
+  b = hashenv__put('param_var15', reg, tblProg, tblName)
+    -----------
+
+  --set comment registers
+  hashr__set_comments
+
+END tppenv
