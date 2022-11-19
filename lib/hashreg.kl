@@ -3,7 +3,7 @@ PROGRAM hashreg
 %COMMENT = 'hashreg'
 %NOLOCKGROUP
 
-%INCLUDE errors.klt
+%include errors.klt
 %include register_types.klt
 --include value type
 %include hashenv.klt
