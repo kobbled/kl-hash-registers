@@ -3,9 +3,9 @@ PROGRAM tppenv
 
 -------macros
 --change depending on size of environment file
-%define HASH_SIZE 277
+%define HASH_SIZE 302
 
-%define HASH_PROGRAM 'env'
+%define HASH_PROGRAM 'tppenv'
 %define HASHTABLE 'tbl'
 ---------------
 
@@ -20,7 +20,7 @@ VAR
   tblProg : STRING[16]
   tblName : STRING[16]
   reg : hval_def
-  tbl FROM env: ARRAY[HASH_SIZE] OF hashname
+  tbl IN CMOS: ARRAY[HASH_SIZE] OF hashname
   b : BOOLEAN
 
 %include hashreg.klh
@@ -39,17 +39,101 @@ BEGIN
   hashr__set_hash_table(tblProg, tblName)
   
   --clear registers
-  hashr__clear_registers(DATA_REG, TRUE)
+    hashr__clear_registers(DATA_REG, TRUE)
   hashr__clear_registers(DATA_POSREG, TRUE)
   hashr__clear_registers(DATA_STRING, TRUE)
   hashr__clear_registers(io_flag, TRUE)
-
+  
   --clear hash table
   reg = hashr__nullenv
   b = hashenv__clear_table(tblProg, tblName, reg)
 
   --**insert environment variables into hash**
   -----------
+    reg.typ = io_dout ; reg.id = 109
+  b = hashenv__put('Cellio_t1', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 110
+  b = hashenv__put('Cellio_t2', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 9
+  b = hashenv__put('Cellio_t1_t2', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 111
+  b = hashenv__put('Cellio_auto', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 108
+  b = hashenv__put('Cellio_dead_man', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 106
+  b = hashenv__put('Cellio_e_stop', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 5
+  b = hashenv__put('Cellio_dry_run', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 145
+  b = hashenv__put('Cellio_reset_', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 11
+  b = hashenv__put('Cellio_OP1_reset', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 12
+  b = hashenv__put('Cellio_OP2_reset', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 4
+  b = hashenv__put('Cellio_OP2_buzzer', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 3
+  b = hashenv__put('Cellio_fence', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 141
+  b = hashenv__put('Cellio_IMStp', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 143
+  b = hashenv__put('Cellio_SfSDP', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 142
+  b = hashenv__put('Cellio_hold', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 148
+  b = hashenv__put('Cellio_enable', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 4
+  b = hashenv__put('Positioner_home', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 5
+  b = hashenv__put('Positioner_perch', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 3
+  b = hashenv__put('Headstock_home', reg, tblProg, tblName)
+    reg.typ = DATA_POSREG ; reg.id = 9
+  b = hashenv__put('Headstock_perch', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 19
+  b = hashenv__put('Laser_enableio', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 1
+  b = hashenv__put('Laser_ready', reg, tblProg, tblName)
+    reg.typ = io_din ; reg.id = 2
+  b = hashenv__put('Laser_fault', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 21
+  b = hashenv__put('Laser_start_', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 18
+  b = hashenv__put('Laser_reset_', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 17
+  b = hashenv__put('Laser_chiller', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 30
+  b = hashenv__put('Laser_power', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 1
+  b = hashenv__put('Laser_analog', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 2
+  b = hashenv__put('Powder_Hopper1_selected', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 25
+  b = hashenv__put('Powder_Hopper1_digitalStart', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 3
+  b = hashenv__put('Powder_Hopper1_analogRPM', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 5
+  b = hashenv__put('Powder_Hopper1_analogLPM', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 3
+  b = hashenv__put('Powder_Hopper2_selected', reg, tblProg, tblName)
+    reg.typ = io_dout ; reg.id = 26
+  b = hashenv__put('Powder_Hopper2_digitalStart', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 4
+  b = hashenv__put('Powder_Hopper2_analogRPM', reg, tblProg, tblName)
+    reg.typ = io_anout ; reg.id = 6
+  b = hashenv__put('Powder_Hopper2_analogLPM', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 14
+  b = hashenv__put('Powder_start_', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 31
+  b = hashenv__put('Powder_hopper_select', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 61
+  b = hashenv__put('Powder_rpm', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 62
+  b = hashenv__put('Powder_lpm', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 26
+  b = hashenv__put('Powder_flow_rate', reg, tblProg, tblName)
+    reg.typ = DATA_REG ; reg.id = 34
+  b = hashenv__put('Powder_delay', reg, tblProg, tblName)
     reg.typ = DATA_STRING ; reg.id = 1
   b = hashenv__put('program_name', reg, tblProg, tblName)
     reg.typ = DATA_STRING ; reg.id = 2
@@ -106,40 +190,6 @@ BEGIN
   b = hashenv__put('HT_Middle', reg, tblProg, tblName)
     reg.typ = io_dout ; reg.id = 113
   b = hashenv__put('HT_ID_Pos', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 141
-  b = hashenv__put('IMStp', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 143
-  b = hashenv__put('SfSDP', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 142
-  b = hashenv__put('DO_Hold', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 148
-  b = hashenv__put('DO_Enable', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 145
-  b = hashenv__put('Fault_Reset', reg, tblProg, tblName)
-    reg.typ = io_din ; reg.id = 11
-  b = hashenv__put('OP1_Reset', reg, tblProg, tblName)
-    reg.typ = io_din ; reg.id = 12
-  b = hashenv__put('OP2_Reset', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 4
-  b = hashenv__put('OP2_Buzzer', reg, tblProg, tblName)
-    reg.typ = io_din ; reg.id = 9
-  b = hashenv__put('DI_Start', reg, tblProg, tblName)
-    reg.typ = io_din ; reg.id = 10
-  b = hashenv__put('DI_Stop', reg, tblProg, tblName)
-    reg.typ = io_din ; reg.id = 3
-  b = hashenv__put('Fence_Closed', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 109
-  b = hashenv__put('T1_Mode_Sel', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 110
-  b = hashenv__put('T2_Mode_Sel', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 9
-  b = hashenv__put('T1_or_T2_Mode_Sel', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 111
-  b = hashenv__put('Auto_Mode_Sel', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 108
-  b = hashenv__put('Dead_Man_Switch', reg, tblProg, tblName)
-    reg.typ = io_dout ; reg.id = 106
-  b = hashenv__put('E_Stop_Active', reg, tblProg, tblName)
     reg.typ = io_anout ; reg.id = 1
   b = hashenv__put('Laser_Power', reg, tblProg, tblName)
     reg.typ = io_anout ; reg.id = 3
@@ -196,6 +246,8 @@ BEGIN
   b = hashenv__put('Pause_Scan_Path', reg, tblProg, tblName)
     reg.typ = io_flag ; reg.id = 109
   b = hashenv__put('end_scan', reg, tblProg, tblName)
+    reg.typ = io_flag ; reg.id = 110
+  b = hashenv__put('endCaps', reg, tblProg, tblName)
     reg.typ = io_flag ; reg.id = 10
   b = hashenv__put('Hmi_Laser_Enable', reg, tblProg, tblName)
     reg.typ = io_flag ; reg.id = 11
@@ -318,8 +370,6 @@ BEGIN
   b = hashenv__put('jpos_2', reg, tblProg, tblName)
     reg.typ = DATA_POSREG ; reg.id = 77
   b = hashenv__put('pos', reg, tblProg, tblName)
-    reg.typ = DATA_REG ; reg.id = 1
-  b = hashenv__put('Alarm_Reg', reg, tblProg, tblName)
     reg.typ = DATA_REG ; reg.id = 2
   b = hashenv__put('Mem_Tool_No', reg, tblProg, tblName)
     reg.typ = DATA_REG ; reg.id = 3
