@@ -41,8 +41,6 @@ ROUTINE hSetCmts(tbl : ARRAY OF hashname)
           ELSE:
             SET_PORT_CMT((tbl[i].val.typ), (tbl[i].val.id), (tbl[i].key), status)
         ENDSELECT
-
-        CHK_STAT(status)
       ENDIF
       i = i + 1
     ENDWHILE
